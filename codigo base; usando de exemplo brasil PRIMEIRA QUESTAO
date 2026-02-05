@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 
-typedef struct Result //criei uma struct para deixar organizado
+typedef struct Result //registro para cada atleta
 {
     char games[100];
     char event[200];
@@ -23,7 +23,7 @@ int main()
     Result res;
     int womenCountBra = 0;//criei um contador para somar cada mulher Brasileira que o leitor encontra 
     int menCountBra = 0;//criei um contador para somar cada mulher Brasileira que o leitor encontra
-    float mediaMedalhas = 0;
+    float razaoMedalhas = 0;
 
     // abrindo o arquivo para leitura 
     FILE *file = fopen("results.csv", "r");
@@ -44,7 +44,7 @@ int main()
                res.games, res.event, res.team, res.pos, res.medal,
                res.as, &res.athlete_id, res.noc, res.discipline, res.nationality);
 
-        int ano = atoi(res.games);
+        int ano = atoi(res.games); // usa a string e extrai o numero nela
         
         if (ano >= 2008){
 
