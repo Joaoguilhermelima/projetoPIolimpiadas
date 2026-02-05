@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+
+typedef struct Result //criei uma struct para deixar organizado
+{
+    char games[100];
+    char event[200];
+    char team[100];
+    char pos[50];
+    char medal[20];
+    char as[100];
+    int athlete_id;
+    char noc[10];
+    char discipline[100];
+    char nationality[100];
+} Result;
+
+int main()
+{
+    char line[4096];//usando o limite de 4096 bytes para cada linha
+    Result res;
+    int womenCountBra = 0;//criei um contador para somar cada mulher Brasileira que o leitor encontra 
+    int menCountBra = 0;//criei um contador para somar cada mulher Brasileira que o leitor encontra
+    float mediaMedalhas = 0;
+
+    // abrindo o arquivo para leitura 
+    FILE *file = fopen("results.csv", "r");
+
+    if (file == NULL) //caso o arquivo nao seja aberta corretamente
+    {
+        printf("Error: Could not open results.csv\n");//mensagem de erro caso nao seja aberto corretamente 
+        return 1;
+    }
+
+    
+    fgets(line, sizeof(line), file);// lê a linha e guarda na variável line, 
+
+    while (fgets(line, sizeof(line), file))
+    {
+        // extrai as dados das strings, usando a vírgula para saber até onde cada informação termina e distribui no struct 
+        sscanf(line, "%[^,],\"%[^\"]\",%[^,],%[^,],%[^,],%[^,],%d,%[^,],%[^,],%[^,]",
+               res.games, res.event, res.team, res.pos, res.medal,
+               res.as, &res.athlete_id, res.noc, res.discipline, res.nationality);
+
+        int ano = atoi(res.games);
+        
+        if (ano >= 2008){
+
+        // filtrando para so quem tem medalhas 
+        if (strstr(res.event, "no medal") == NULL)
+        {
+            // filtrando para Brasileiros
+            if (strcmp(res.noc, "BRA") == 0)
+            {
+                // procurando por homens 
+                if (strstr(res.event, "Men") != NULL)
+                {
+                    menCountBra++;// +1 para o contador de homens brasileiros medalhistas
+                } //procurando por mulheres 
+                else if (strstr(res.event, "Women") != NULL)
+                {
+                    womenCountBra++; //+1 para o contador de mulheres brasileiras medalhistas 
+                }
+            }
+        }
+    }
+
+}
+    mediaMedalhas = (float) womenCountBra/menCountBra;
+    printf("Homens BRASILEIROS medalhistas: %d Mulheres BRASILEIRAS medalhistas: %d\n media: %f", menCountBra, womenCountBra, mediaMedalhas);
+}
