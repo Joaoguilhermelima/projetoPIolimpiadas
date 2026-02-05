@@ -2,9 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-
-typedef struct Result //registro para cada atleta
-{
+typedef struct Result {
     char games[100];
     char event[200];
     char team[100];
@@ -14,60 +12,56 @@ typedef struct Result //registro para cada atleta
     int athlete_id;
     char noc[10];
     char discipline[100];
-    char nationality[100];
 } Result;
 
-int main()
-{
-    char line[4096];//usando o limite de 4096 bytes para cada linha
+int main() {
+    char line[4096];
+    char paisEscolhido[10];
     Result res;
-    int womenCountBra = 0;//criei um contador para somar cada mulher Brasileira que o leitor encontra 
-    int menCountBra = 0;//criei um contador para somar cada mulher Brasileira que o leitor encontra
-    float razaoMedalhas = 0;
+    int womenCount = 0;
+    int menCount = 0;
+    float mediaMedalhas = 0;
 
-    // abrindo o arquivo para leitura 
     FILE *file = fopen("results.csv", "r");
-
-    if (file == NULL) //caso o arquivo nao seja aberta corretamente
-    {
-        printf("Error: Could not open results.csv\n");//mensagem de erro caso nao seja aberto corretamente 
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
         return 1;
     }
 
-    
-    fgets(line, sizeof(line), file);// lê a linha e guarda na variável line, 
+    printf("Digite um sigla NOC do país (ex: USA, BRA, FRA): ");
+    scanf("%s", paisEscolhido);
 
-    while (fgets(line, sizeof(line), file))
-    {
-        // extrai as dados das strings, usando a vírgula para saber até onde cada informação termina e distribui no struct 
-        sscanf(line, "%[^,],\"%[^\"]\",%[^,],%[^,],%[^,],%[^,],%d,%[^,],%[^,],%[^,]",
-               res.games, res.event, res.team, res.pos, res.medal,
-               res.as, &res.athlete_id, res.noc, res.discipline, res.nationality);
+    fgets(line, sizeof(line), file); 
 
-        int ano = atoi(res.games); // usa a string e extrai o numero nela
+    while (fgets(line, sizeof(line), file)) {
+        strcpy(res.medal, "");
+
+        sscanf(line, "%[^,],%*[^,],%*[^,],\"%[^\"]\",%*[^,],%*[^,],%[^,],%*[^,],%*[^,],%*[^,],%s",
+               res.games, res.event, res.noc, res.medal);
+
+        int ano = (int)atof(res.games);
         
-        if (ano >= 2008){
-
-        // filtrando para so quem tem medalhas 
-        if (strstr(res.event, "no medal") == NULL)
-        {
-            // filtrando para Brasileiros
-            if (strcmp(res.noc, "BRA") == 0)
-            {
-                // procurando por homens 
-                if (strstr(res.event, "Men") != NULL)
-                {
-                    menCountBra++;// +1 para o contador de homens brasileiros medalhistas
-                } //procurando por mulheres 
-                else if (strstr(res.event, "Women") != NULL)
-                {
-                    womenCountBra++; //+1 para o contador de mulheres brasileiras medalhistas 
+        if (ano >= 2008) {
+            if (strlen(res.medal) > 0 && strcmp(res.medal, "NA") != 0) {
+                if (strcmp(res.noc, paisEscolhido) == 0) {
+                    if (strstr(res.event, "Feminino") != NULL) {
+                        womenCount++;
+                    } 
+                    else if (strstr(res.event, "Masculino") != NULL) {
+                        menCount++;
+                    }
                 }
             }
         }
     }
 
-}
-    mediaMedalhas = (float) womenCountBra/menCountBra;
-    printf("Homens BRASILEIROS medalhistas: %d Mulheres BRASILEIRAS medalhistas: %d\n media: %f", menCountBra, womenCountBra, mediaMedalhas);
+    if (menCountBra > 0) {
+        mediaMedalhas = (float)womenCount / menCount;
+    }
+
+    printf("Homens originados de %s medalhistas: %d Mulheres originadas de %s medalhistas: %d\n media: %.2f", 
+           paisEscolhido, menCount, paisEscolhido, womenCount, mediaMedalhas);
+
+    fclose(file);
+    return 0;
 }
