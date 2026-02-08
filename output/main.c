@@ -54,7 +54,7 @@ int main() {
         MulherPorHomem = (float)mulher / homem;
     }
 
-    printf("\n--- RESULTADO PARA %s ---\n", buscaNOC);
+    printf("Homens e Mulheres Medalhistas de %s nas olimpíadas mais recentes", buscaNOC);
     printf("Homens medalhistas: %d\n", homem);
     printf("Mulheres medalhistas: %d\n", mulher);
     
