@@ -5,55 +5,55 @@
 int main() 
 {
     FILE *f = fopen("results.csv", "r");
-    char linha[1024];
-
+    
     if (!f) {
         printf("Erro ao abrir arquivo\n");
         return 1;
     }
 
-    fgets(linha, sizeof(linha), f); // Ignora o cabeçalho
+    char linha[1024];
+    fgets(linha, sizeof(linha), f); // Ignora cabeçalho
 
-    while (fgets(linha, sizeof(linha), f)) { // Lê cada linha do arquivo
+    while (fgets(linha, sizeof(linha), f)) { //Lê as linhas do arquivo
         char *token = strtok(linha, ",");
         int coluna = 0;
-        char sexo[10];
+
+        char sexo[15];
         char evento[100] = "";
-        char noc[4];
-        int ano;
-        char medalha[10];
+        char noc[4] = "";
+        int ano = 0;
+        char medalha[20] = "";
 
         while (token != NULL) {
-             if (coluna == 0) {
-                ano = atoi(token); // Armazenar ano. O atoi transforma string em inteiro
-            }
-            
-            if (coluna == 4) { // Armazenar sexo
-                strcpy(evento, token);
-            } 
-            
-            if (coluna == 7) {
-                strcpy(noc, token); // Armazenar NOC
+
+            if (coluna == 0) { // Armazenar o ano
+                ano = atoi(token);
             }
 
-            if (coluna == 10) {
-                strcpy(medalha, token); //Armazenar medalha
+            if (coluna == 3) { // Armazenar o evento para colocar o sexo depois
+                strcpy(evento, token);
+            }
+
+            if (coluna == 7) { // Armazenar o NOC
+                strcpy(noc, token);
+            }
+
+            if (coluna == 10) { // Armazenar a medalha
+                strcpy(medalha, token);
             }
 
             token = strtok(NULL, ",");
             coluna++;
         }
 
-        if (strstr(evento, "Women") != NULL) {
-                strcpy(sexo, "F");
-                } else if (strstr(evento, "Men") != NULL) {
-                strcpy(sexo, "M");
-                } else {
-                strcpy(sexo, "Desconhecido");
-                }
+        if (strstr(evento, "Women") != NULL)
+            strcpy(sexo, "F");
+        else if (strstr(evento, "Men") != NULL)
+            strcpy(sexo, "M");
+        else
+            strcpy(sexo, "NA");
 
-        printf("%d, %s, %s, %s\n", ano, sexo, noc, medalha); // Imprime os dados extraídos
-
+        printf("%d, %s, %s, %s\n", ano, sexo, noc, medalha);
     }
 
     fclose(f);
