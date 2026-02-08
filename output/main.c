@@ -22,9 +22,9 @@ int main() {
 
     char linha[2048];
 
-    int h = 0, m = 0; // contadores de medalhistas homens e mulheres 
+    int homem = 0, mulher = 0; // contadores de medalhistas homens e mulheres 
 
-    // Pula a primeira linha de títulos do arquivo
+    // pula a primeira linha de títulos do arquivo
     fgets(linha, sizeof(linha), arquivo);
 
     while (fgets(linha, sizeof(linha), arquivo)) { // percorre o arquivo linha por linha 
@@ -38,11 +38,11 @@ int main() {
 
                     if (strstr(linha, "Women") != NULL) { // se for mulher ele conta 
 
-                        m++; // contador de mulher 
+                        mulher++; // contador de mulher 
 
                     } else if (strstr(linha, "Men") != NULL) { // se for homem 
 
-                        h++; // contador de homem
+                        homem++; // contador de homem
                     }
                 }
             }
@@ -50,16 +50,16 @@ int main() {
     } // Fim do while
 
     // Calcula a razão (sem usar ++ para não alterar os contadores)
-    if (h > 0) {
-        MulherPorHomem = (float)m / h;
+    if (homem > 0) {
+        MulherPorHomem = (float)mulher / homem;
     }
 
     printf("\n--- RESULTADO PARA %s ---\n", buscaNOC);
-    printf("Homens medalhistas: %d\n", h);
-    printf("Mulheres medalhistas: %d\n", m);
+    printf("Homens medalhistas: %d\n", homem);
+    printf("Mulheres medalhistas: %d\n", mulher);
     
-    // Usamos %.2f para imprimir float com 2 casas decimais
-    printf("Razao mulher por homem: %.2f\n", MulherPorHomem);
+    // Usamos %.2lf para imprimir float com 2 casas decimais
+    printf("Razao mulher por homem: %.2lf\n", MulherPorHomem);
 
     fclose(arquivo);
     return 0;
