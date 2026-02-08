@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+int main() {
+    char buscaNOC[10]; // armazena o país digitado pelo usuário
+
+    printf("Digite o NOC (ex: BRA, USA): "); // pergunta o NOC do país 
+
+    scanf("%s", buscaNOC); // usuário digita o NOC do país
+
+    for(int i = 0; buscaNOC[i]; i++) buscaNOC[i] = toupper(buscaNOC[i]); // converte o texto digitado para maiúsculas 
+
+    FILE *arquivo = fopen("results.csv", "r"); // abre o arquivo no modo leitura 
+    if (!arquivo) {
+        printf("Erro: Arquivo results.csv nao encontrado!\n");
+        return 1;
+    }
+
+    char linha[2048];
+
+    int h = 0, m = 0; // contadores de participantes homens e mulheres 
+
+    // Pula a primeira linha de títulos do arquivo
+    fgets(linha, sizeof(linha), arquivo);
+
+    while (fgets(linha, sizeof(linha), arquivo)) { // percorre o arquivo linha por linha 
+        
+        if (strstr(linha, buscaNOC) != NULL) { // procura se o NOC do país está na linha 
+            
+            
+            if (strstr(linha, "Women") != NULL) { // se for mulher ele conta 
+
+                m++; // contador de mulher participante
+
+            } else if (strstr(linha, "Men") != NULL) { // se for homem 
+
+                h++; // contador de homem participante
+            }
+        }
+    } // Fim do while
+
+    printf("\n--- PARTICIPANTES PARA %s ---\n", buscaNOC);
+    printf("Homens participantes: %d\n", h);
+    printf("Mulheres participantes: %d\n", m);
+    
+    fclose(arquivo);
+    return 0;
+}
