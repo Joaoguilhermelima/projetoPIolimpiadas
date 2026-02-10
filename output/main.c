@@ -14,7 +14,7 @@ int main() {
 
     for(int i = 0; buscaNOC[i]; i++) buscaNOC[i] = toupper(buscaNOC[i]); // converte o texto digitado para maiúsculas 
 
-    FILE *arquivo = fopen("results.csv", "r"); // abre o aqrquivo no modo leitura 
+    FILE *arquivo = fopen("results.csv", "r"); // abre o arquivo no modo leitura 
     if (!arquivo) {
         printf("Erro: Arquivo results.csv nao encontrado!\n");
         return 1;
