@@ -3,13 +3,14 @@
 #include <string.h>
 
 typedef struct {
-    char nome[50];
+    char ano[50];       
     int totalMedalhas;
 } Edicao;
 
-int encontraEdicao(Edicao edicoes[], int qntdEdicoes, char nome[]) {
-    for(int i = 0; i < qntdEdicoes; i++) {
-        if(strcmp(edicoes[i].nome, nome) == 0) {
+int encontraEdicao(Edicao edicoes[], int qntdEdicoes, char nome[]) { 
+    for(int i = 0; i < qntdEdicoes; i++) { 
+        
+        if(strcmp(edicoes[i].ano, nome) == 0) { 
             return i;
         }
     }
@@ -24,81 +25,76 @@ int main()
         return 1;
     }
 
-    char linha[1024];
-    Edicao edicoes[200];
-    int totalEdicoes = 0;
     char paises[5][10];
-
-    printf("Digite os 5 países que deseja: \n");
+    printf("Digite os 5 NOCs que deseja (ex: BRA USA FRA CHN GER): \n");
     for(int i = 0; i < 5; i++) {
         scanf("%s", paises[i]);
     }
 
-    fgets(linha,sizeof(linha), arquivo); // pula o cabeçalho
+    for(int p = 0; p < 5; p++) {
+        Edicao edicoes[200];
+        int totalEdicoes = 0;
+        char linha[1024];
 
-    while(fgets(linha, sizeof(linha), arquivo)) {
-        char *token = strtok(linha, ",");
-        int coluna = 0;
+        rewind(arquivo); 
+        fgets(linha, sizeof(linha), arquivo); 
 
-        int ano = 0;
-        char pais[50] = "";
-        char medalha[10] = "";
+        while(fgets(linha, sizeof(linha), arquivo)) {
+            linha[strcspn(linha, "\r\n")] = 0;
+            
+            char copiaLinha[1024];
+            strcpy(copiaLinha, linha);
 
-        while (token != NULL) {
-            if(coluna == 0) {
-                ano = atoi(token);
+            char *token = strtok(copiaLinha, ",");
+            int coluna = 0;
+            char anoLido[50] = "";
+            char paisLido[50] = "";
+            char medalhaLida[50] = "";
+
+            while (token != NULL) {
+                if(coluna == 0) strcpy(anoLido, token);  
+                if(coluna == 4) strcpy(medalhaLida, token); 
+                if(coluna == 7) strcpy(paisLido, token);    
+                
+                token = strtok(NULL, ",");
+                coluna++;
             }
 
-            if(coluna == 6) {
-                strcpy(pais, token);
-            }
+            if (strcmp(paises[p], paisLido) == 0 && strcmp(medalhaLida, "NA") != 0 && strlen(medalhaLida) > 1) {
+                
+                int indiceEdicao = encontraEdicao(edicoes, totalEdicoes, anoLido);
 
-            if(coluna == 10) {
-                strcpy(medalha, token);
+                if(indiceEdicao == -1) {
+                    strcpy(edicoes[totalEdicoes].ano, anoLido); 
+                    edicoes[totalEdicoes].totalMedalhas = 1;
+                    totalEdicoes++;
+                } else {
+                    edicoes[indiceEdicao].totalMedalhas++;
+                }
             }
+        } // Fim do While
 
-            token = strtok(NULL, ",");
-            coluna++;
+        // Ordenação Bubble Sort
+        for(int i = 0; i < totalEdicoes; i++) {
+            for(int j = 0; j < totalEdicoes - i - 1; j++) {
+                if(edicoes[j].totalMedalhas < edicoes[j + 1].totalMedalhas) {
+                    Edicao temporaria = edicoes[j];
+                    edicoes[j] = edicoes[j + 1];
+                    edicoes[j + 1] = temporaria;
+                }
+            }
         }
 
-        int valido = 0;
-        for (int i = 0; i < 5; i++) {
-            if (strcmp(paises[i], pais) == 0) {
-            valido = 1;
+        printf("\n TOP 5: %s\n", paises[p]);
+        if(totalEdicoes == 0) {
+            printf("Nenhum dado encontrado para este pais.\n");
+        } else {
+            for(int i = 0; i < 5 && i < totalEdicoes; i++) {
+                printf("%d lugar: %s - %d medalhas em %s\n", i + 1, paises[p], edicoes[i].totalMedalhas, edicoes[i].ano);
             }
         }
-
-        if (valido && strlen(medalha) > 0) {
-            char edicaoNome[50];
-            sprintf(edicaoNome, "%d", ano);
-
-            int indiceEdicao = encontraEdicao(edicoes, totalEdicoes, edicaoNome);
-
-            if(indiceEdicao == -1) {
-                strcpy(edicoes[totalEdicoes].nome, edicaoNome);
-                edicoes[totalEdicoes].totalMedalhas = 1;
-                totalEdicoes++;
-            } else {
-                edicoes[indiceEdicao].totalMedalhas++;
-            }
-        }
-    }
+    } // Fim do for de países
 
     fclose(arquivo);
-
-    for(int i = 0; i < totalEdicoes; i++) {
-        for(int j = 0; j < totalEdicoes - i - 1; j++) {
-            if(edicoes[j].totalMedalhas < edicoes[j + 1].totalMedalhas) {
-                Edicao temporaria = edicoes[j];
-                edicoes[j] = edicoes[j + 1];
-                edicoes[j + 1] = temporaria;
-            }
-        }
-    }
-
-    printf("\nTop 3 edições em que os países escolhidos ganharam mais medalhas:\n");
-
-    for(int i = 0; i < 3 && i < totalEdicoes; i++) {
-        printf("%d° lugar: %d medalhas em %s\n", i + 1, edicoes[i].totalMedalhas, edicoes[i].nome);
-    }
-}   
+    return 0;
+}
