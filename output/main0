@@ -17,31 +17,54 @@ int main() {
     }
 
     char linha[2048];
-    int PrimeiraMedalha = 0; // contador para a primeira medalha
+    int primeiraMedalha = 0; // contador para a primeira medalha
+    int menorAno = 9999; // variável para armazenar o menor ano encontrado
+    int ano = 0; // armazena o ano
+    char tipoMedalha[10] = ""; // armazena o tipo da medalha
 
-    // Pula a primeira linha de títulos do arquivo
+    // pula o cabeçalho do arquivo
     fgets(linha, sizeof(linha), arquivo);
 
     while (fgets(linha, sizeof(linha), arquivo)) { // percorre o arquivo linha por linha 
         
-        if (strstr(linha, buscaNOC) != NULL) { // procura se o NOC do país está na linha 
+        char *token = strtok(linha, ","); // tokeniza a linha usando vírgula como delimitador
+        int coluna = 0;
+        char noc[6] = ""; // armazena o NOC
+        char medalha[10] = ""; //armazena a medalha
+
+        while (token != NULL) { // percorre os tokens da linha
             
-            // verifica se tem medalha 
-            if (strstr(linha, "Gold") || strstr(linha, "Silver") || strstr(linha, "Bronze")) { 
-                
-                PrimeiraMedalha++; // quando encontra a primeira medalha do pais, ele soma um ao contador
-
-                if (PrimeiraMedalha == 1) { // quando o contador somar um
-                    // ele para de procurar e bota a medalha e ano que achou
-                    printf("\n--- PRIMEIRA MEDALHA ENCONTRADA PARA %s ---\n", buscaNOC);
-                    printf("Dados: %s", linha); 
-                    break; // para de procurar imediatamente
-                }
+            if (coluna == 0) { // primeira coluna é o ano
+                ano = atoi(token);
             }
-        }
-    } // Fim do while
 
-    if (PrimeiraMedalha == 0) {
+            if (coluna == 7) { // coluna do NOC
+                strcpy(noc, token);
+            }
+
+            if (coluna == 10) { // coluna da medalha
+                strcpy(medalha, token);
+            }
+
+            token = strtok(NULL, ","); // obtém o próximo token
+            coluna++;
+        }
+
+        if (strcmp(noc, buscaNOC) == 0 && (strcmp(medalha, "Gold") == 0 || strcmp(medalha, "Silver") == 0 || strcmp(medalha, "Bronze") == 0)) {
+            if (ano < menorAno) { // verifica se o ano é menor que o menor ano encontrado
+                menorAno = ano; // atualiza o menor ano
+                strcpy(tipoMedalha, medalha);
+                primeiraMedalha = 1; // marca que a primeira medalha foi encontrada
+            } 
+        }
+
+    } 
+
+    if (primeiraMedalha == 1) {
+        printf("\nA primeira medalha de %s foi conquistada em %d e foi do tipo %s\n", buscaNOC, menorAno, tipoMedalha);
+    }
+
+    if (primeiraMedalha == 0) {
         printf("\nNenhuma medalha encontrada para %s.\n", buscaNOC);
     }
 
