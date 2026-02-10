@@ -54,7 +54,7 @@ int main() {
    MulherPorHomem = (float)mulher / homem; // Deixando a variável MulherPorHomem como uma operação matemática, float para transformar o cálculo dos int em float 
     }
 
-    printf("Homens e Mulheres Medalhistas de %s nas olimpíadas mais recentes", buscaNOC); // imprime a mensagem de onde vem os atletas 
+    printf("Homens e Mulheres Medalhistas de %s nas olimpíadas mais recentes\n", buscaNOC); // imprime a mensagem de onde vem os atletas 
     printf("Homens medalhistas: %d\n", homem); // mostra o total de homens medalhistas 
     printf("Mulheres medalhistas: %d\n", mulher); // mostra o toal de mulheres medalhistas 
     
