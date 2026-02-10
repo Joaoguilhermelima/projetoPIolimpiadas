@@ -14,7 +14,7 @@ int main() {
 
     FILE *arquivo = fopen("results.csv", "r"); // abre o arquivo no modo leitura 
     if (!arquivo) {
-        printf("Erro: Arquivo results.csv nao encontrado!\n");
+        printf("Erro: Arquivo results.csv nao encontrado!\n"); // caso nao ache o arquivo 
         return 1;
     }
 
@@ -41,7 +41,7 @@ int main() {
         }
     } // Fim do while
 
-    printf("\n--- PARTICIPANTES PARA %s ---\n", buscaNOC);
+    printf("Resultados para participações de homens e mulheres de %s", buscaNOC);
     printf("Homens participantes: %d\n", h);
     printf("Mulheres participantes: %d\n", m);
     
