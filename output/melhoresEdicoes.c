@@ -9,7 +9,6 @@ typedef struct { //struct para armazenar o ano e a quantidade de medalhas
 
 int encontraEdicao(Edicao edicoes[], int qntdEdicoes, char nome[]) { //função que serve pra encontrar a edição das olimpíadas
     for(int i = 0; i < qntdEdicoes; i++) { 
-        
         if(strcmp(edicoes[i].ano, nome) == 0) { 
             return i;
         }
@@ -28,10 +27,10 @@ int main()
     char paises[5][10]; //armazenar os países que o usuário deseja consultar
     printf("Digite os 5 NOCs que deseja (ex: BRA USA FRA CHN GER): \n");
     for(int i = 0; i < 5; i++) {
-        scanf("%s", paises[i]);
+        scanf("%s", paises[i]); //lê os países escolhidos
     }
 
-    for(int p = 0; p < 5; p++) {
+    for(int p = 0; p < 5; p++) {//esse for percorre os países escolhidos para consultar as edições com mais medalhas, armazenando cada dado ao seu país
         Edicao edicoes[200];
         int totalEdicoes = 0;
         char linha[1024];
@@ -40,7 +39,7 @@ int main()
         fgets(linha, sizeof(linha), arquivo); 
 
         while(fgets(linha, sizeof(linha), arquivo)) {
-            linha[strcspn(linha, "\r\n")] = 0;
+            linha[strcspn(linha, "\r\n")] = 0;//remove o \n do final da linha, caso exista
             
             char copiaLinha[1024];
             strcpy(copiaLinha, linha);

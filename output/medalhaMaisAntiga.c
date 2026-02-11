@@ -4,11 +4,13 @@
 #include <ctype.h>
 
 int main() {
-    char buscaNOC[10]; // armazena o país digitado pelo usuário
+    char buscaNOC[10]; // armazena o país digitado pelo usuário em um array
     printf("Digite o NOC (ex: BRA, USA): "); // pergunta o NOC do país 
     scanf("%s", buscaNOC); // usuário digita o NOC do país
 
-    for(int i = 0; buscaNOC[i]; i++) buscaNOC[i] = toupper(buscaNOC[i]); // converte o texto digitado para maiúsculas 
+    for(int i = 0; buscaNOC[i]; i++) {
+        buscaNOC[i] = toupper(buscaNOC[i]); // converte o texto digitado para maiúsculas
+    } 
 
     FILE *arquivo = fopen("results.csv", "r"); // abre o aqrquivo no modo leitura 
     if (!arquivo) {
@@ -17,9 +19,9 @@ int main() {
     }
 
     char linha[2048];
-    char linhaMaisAntiga[2048]; // guarda os dados da medalha pioneira
+    char linhaMaisAntiga[2048]; // guarda os dados da primeira medalha
     int menorAno = 9999; // valor inicial alto para ser substituído pelo primeiro ano que achar
-    int encontrou = 0;
+    int encontrou = 0; // flag para indicar se encontrou alguma medalha do país
 
     // Pula a primeira linha de títulos do arquivo
     fgets(linha, sizeof(linha), arquivo);
@@ -28,7 +30,6 @@ int main() {
         int anoAtual = atoi(linha); // transforma o ano em inteiro
 
         if (strstr(linha, buscaNOC) != NULL) { // procura se o NOC do país está na linha 
-            
             // verifica se tem medalha 
             if (strstr(linha, "Gold") || strstr(linha, "Silver") || strstr(linha, "Bronze")) { 
                 
@@ -43,7 +44,6 @@ int main() {
     } // Fim do while
 
     if (encontrou) {
- 
         printf("Dados: %s", linhaMaisAntiga);
     } else {
         printf("\nNenhuma medalha encontrada para %s.\n", buscaNOC);
